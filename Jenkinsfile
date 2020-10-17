@@ -4,6 +4,9 @@ pipeline {
         // SBT='/home/ubuntu/jenkins/tools/org.jvnet.hudson.plugins.SbtPluginBuilder_SbtInstallation/sbt/bin/sbt'
         registry = 'pratik977/akkahttp'
     }
+    triggers {
+        pollSCM 'H/5 * * * *'
+    }
     stages {
         // stage ('Installation......') {
         //     agent {
@@ -13,60 +16,66 @@ pipeline {
         //         tool name: 'sbt', type: 'org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation'                
         //     }
         // } 
+        stage('Source') {
+            steps {
+                git 'https://github.com/kumar-pratik/akka-http-examples.git'
+            }
+        }
         stage ('Compilation.....') {
-            // agent {
-            //     label 'Linux'
-            // }
             steps {
                 sh 'sbt clean compile'
                 echo "Successfully compiled"
             }
         }
-        stage ('Testing......'){
-            // agent {
-            //     label 'Linux'
-            // }
+        stage ('Testing......') {
             steps{
                 sh 'sbt test'
                 echo "Successfully compiled"
             }
         }
         stage ('Packaging'){
-            // agent {
-            //     label 'Linux'
-            // }
             steps{
                 sh 'sbt assembly'
                 echo "Successfully compiled"
+                archiveArtifacts artifacts: 'target/scala-2.11/*.jar', fingerprint: true, followSymlinks: false, onlyIfSuccessful: true
             }
 
         }
-        stage ('Image Build'){
+        stage ('Deploy'){
             when {
                 branch 'master'
             }
-            steps{
-                sh 'docker build -t $registry:$BUILD_NUMBER'
-                echo "Image Build successfull"
-            }
-        }
-        stage ('Image Push') {
-            when {
-                branch 'master'
-            }
-            steps{
-                withDockerRegistry([ credentialsId: "dockerhub_credential", url: "" ]) {
-                    sh 'docker push $registry:$BUILD_NUMBER'
+            stages{
+                stage('Image Build') {
+                    steps{
+                        sh 'docker build -t $registry:$BUILD_NUMBER'
+                        echo "Image Build successfull"
+                    }
+                }
+                stage ('Image Push') {
+                    steps{
+                        withDockerRegistry([ credentialsId: "dockerhub_credential", url: "" ]) {
+                            sh 'docker push $registry:$BUILD_NUMBER'
+                        }
+                    }
+                }
+                stage ('Removing local image') {
+                    steps{
+                        sh 'docker rmi $registry:$BUILD_NUMBER'
+                    }
                 }
             }
+            
         }
-        stage ('Removing local image') {
-            when {
-                branch 'master'
-            }
-            steps{
-                sh 'docker rmi $registry:$BUILD_NUMBER'
-            }
+        
+        
+    }
+    post {
+        always {
+            emailext to: 'kumar.pratik@knoldus.com',
+                 subject: "Pipeline: ${currentBuild.fullDisplayName} is ${currentBuild.currentResult}",
+                 body: "For complete detail goto ${BUILD_URL}",
+                 attachLog: true
         }
     }
 }
