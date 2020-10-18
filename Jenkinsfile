@@ -1,12 +1,8 @@
 pipeline {
     agent any
     environment {
-        // SBT='/home/ubuntu/jenkins/tools/org.jvnet.hudson.plugins.SbtPluginBuilder_SbtInstallation/sbt/bin/sbt'
         registry = 'pratik977/akkahttp'
     }
-    // triggers {
-    //     pollSCM 'H/5 * * * *'
-    // }
     stages {
         stage ('Compilation.....') {
             steps {
@@ -17,33 +13,34 @@ pipeline {
         stage ('Testing......') {
             steps{
                 sh 'sbt test'
-                echo "########Successfully Tested##################"
+                echo "##########Successfully tested###################"
             }
         }
-        stage ('Packaging........'){
+        stage ('Packaging.......'){
             steps{
                 sh 'sbt assembly'
                 archiveArtifacts artifacts: 'target/scala-2.11/*.jar', fingerprint: true, followSymlinks: false, onlyIfSuccessful: true
-                echo "#######Artifact Generated#####################"
+                echo "##########Successfully archived##################"
             }
 
         }
-        stage ('Deploy'){
+        stage ('Deploy........'){
             when {
                 branch 'master'
             }
             stages{
-                stage('Image Build') {
+                stage('Image Build.......') {
                     steps{
                         sh 'docker build -t $registry:$BUILD_NUMBER .'
                         echo "Image Build successfull"
                     }
                 }
-                stage ('Image Push') {
+                stage ('Image Push........') {
                     steps{
                         withDockerRegistry([ credentialsId: "dockerhub_credential", url: "" ]) {
                             sh 'docker push $registry:$BUILD_NUMBER'
                         }
+                        echo "Image Successfully pushed to registry"
                     }
                 }
                 stage ('Removing local image') {
