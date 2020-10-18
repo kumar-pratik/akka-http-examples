@@ -11,20 +11,20 @@ pipeline {
         stage ('Compilation.....') {
             steps {
                 sh 'sbt clean compile'
-                echo "Successfully compiled"
+                echo "######Successfully compiled##################"
             }
         }
         stage ('Testing......') {
             steps{
                 sh 'sbt test'
-                echo "Successfully compiled"
+                echo "########Successfully Tested##################"
             }
         }
-        stage ('Packaging'){
+        stage ('Packaging........'){
             steps{
                 sh 'sbt assembly'
-                echo "Successfully compiled"
                 archiveArtifacts artifacts: 'target/scala-2.11/*.jar', fingerprint: true, followSymlinks: false, onlyIfSuccessful: true
+                echo "#######Artifact Generated#####################"
             }
 
         }
@@ -35,7 +35,7 @@ pipeline {
             stages{
                 stage('Image Build') {
                     steps{
-                        sh 'docker build -t $registry:$BUILD_NUMBER'
+                        sh 'docker build -t $registry:$BUILD_NUMBER .'
                         echo "Image Build successfull"
                     }
                 }
