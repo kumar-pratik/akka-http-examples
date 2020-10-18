@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
     environment {
         // SBT='/home/ubuntu/jenkins/tools/org.jvnet.hudson.plugins.SbtPluginBuilder_SbtInstallation/sbt/bin/sbt'
         registry = 'pratik977/akkahttp'
