@@ -49,13 +49,16 @@ pipeline {
                     }
                 }
                 stage ('Final Deployment') {
+                    environment{
+                        image = 
+                    }
                     steps{
                         emailext to: 'kumar.pratik@knoldus.com',
                             subject: "Input needed for Job ${JOB_NAME}",
                             body: "Please verify the deployment at ${BUILD_URL}"
                         echo "Email sent"
                         input 'proceed to deploy'
-                        sh 'ansible-playbook site.yml'
+                        sh 'ansible-playbook site.yml --extra-vars image=$registry:$BUILD_NUMBER'
                     }
                 }
             }
