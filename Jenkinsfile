@@ -48,6 +48,16 @@ pipeline {
                         sh 'docker rmi $registry:$BUILD_NUMBER'
                     }
                 }
+                stage ('Final Deployment') {
+                    steps{
+                        emailext to: 'kumar.pratik@knoldus.com',
+                            subject: "Input needed for Job ${JOB_NAME}",
+                            body: "Please verify the deployment at ${BUILD_URL}"
+                        echo "Email sent"
+                        Input 'proceed to deploy'
+                        sh 'ansible-playbook site.yml'
+                    }
+                }
             }
             
         }
