@@ -1,0 +1,48 @@
+- hosts: localhost
+  connection: local
+  tasks:
+  - name: Create a service
+    community.kubernetes.k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: akka-http-service
+          labels:
+            app: akka-http
+        spec:
+          selector:
+            app: akka-http
+          type: NodePort
+          ports:
+          - nodePort: 31000
+            targetPort: 8080
+            port: 8080
+        
+  - name: Create a Deployment
+    community.kubernetes.k8s:
+      state: present
+      definition:
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: akka-http
+          labels:
+            app: akka-http
+        spec:
+          replicas: 2
+          selector:
+            matchLabels:
+              app: akka-http
+          template:
+            metadata:
+              labels:
+                app: akka-http
+            spec:
+              containers:
+              - name: akka
+                image: {{ image }}
+                imagePullPolicy: IfNotPresent
+                ports:
+                - containerPort: 8080
