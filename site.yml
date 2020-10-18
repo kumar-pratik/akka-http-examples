@@ -9,6 +9,7 @@
         kind: Service
         metadata:
           name: akka-http-service
+          namespace: default
           labels:
             app: akka-http
         spec:
@@ -28,6 +29,7 @@
         kind: Deployment
         metadata:
           name: akka-http
+          namespace: default
           labels:
             app: akka-http
         spec:
@@ -42,7 +44,7 @@
             spec:
               containers:
               - name: akka
-                image: {{ image }}
+                image: '{{ image }}'
                 imagePullPolicy: IfNotPresent
                 ports:
                 - containerPort: 8080
