@@ -54,7 +54,7 @@ pipeline {
                             subject: "Input needed for Job ${JOB_NAME}",
                             body: "Please verify the deployment at ${BUILD_URL}"
                         echo "Email sent"
-                        Input 'proceed to deploy'
+                        input 'proceed to deploy'
                         sh 'ansible-playbook site.yml'
                     }
                 }
