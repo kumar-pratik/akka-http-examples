@@ -8,19 +8,6 @@ pipeline {
     //     pollSCM 'H/5 * * * *'
     // }
     stages {
-        // stage ('Installation......') {
-        //     agent {
-        //         label 'Linux'
-        //     }
-        //     steps {
-        //         tool name: 'sbt', type: 'org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation'                
-        //     }
-        // } 
-        stage('Source') {
-            steps {
-                git 'https://github.com/kumar-pratik/akka-http-examples.git'
-            }
-        }
         stage ('Compilation.....') {
             steps {
                 sh 'sbt clean compile'
