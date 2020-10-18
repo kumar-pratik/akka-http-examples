@@ -49,9 +49,6 @@ pipeline {
                     }
                 }
                 stage ('Final Deployment') {
-                    environment{
-                        image = 
-                    }
                     steps{
                         emailext to: 'kumar.pratik@knoldus.com',
                             subject: "Input needed for Job ${JOB_NAME}",
