@@ -55,7 +55,7 @@ pipeline {
                             body: "Please verify the deployment at ${BUILD_URL}"
                         echo "Email sent"
                         input 'proceed to deploy'
-                        sh 'ansible-playbook site.yml --extra-vars image=$registry:$BUILD_NUMBER'
+                        sh 'sudo ansible-playbook site.yml --extra-vars image=$registry:$BUILD_NUMBER'
                     }
                 }
             }
