@@ -7,6 +7,7 @@ List of all the branches
 - Generate Docker image and push to docker hub with current BUILD_NUMBER as image tag.
 - Use Kubernetes Deployment and service for deployment.
 - Ask for manual varifiaction before updating the deployment with current image. 
+- *site.yml* is a ansible playbook for creating deployment and service.
 ## Pipeline Workflow
   1. Code compile (For all three branch)
   2. Testing for all three branch.
