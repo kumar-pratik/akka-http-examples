@@ -17,6 +17,7 @@ pipeline {
             }
         }
         stage ('Packaging.......'){
+            when { anyOf { branch 'master'; branch 'development' } }
             steps{
                 sh 'sbt assembly'
                 archiveArtifacts artifacts: 'target/scala-2.11/*.jar', fingerprint: true, followSymlinks: false, onlyIfSuccessful: true
