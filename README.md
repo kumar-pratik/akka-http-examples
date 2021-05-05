@@ -13,4 +13,5 @@ Project to be used :- https://github.com/Abhiknoldur/akka-http-examples.git
 4) At the end we need a Clean production ready docker image from the production branch with tag (Hint: tagging will be on the based of git commit hash to the image).
 5) Email notification will be generated too saying the status of the job is it successfully completed or not. (Hint: Configure Email Notification plugin)
 6) Do follow all the best practice and convention at every steps/stages (i.e. Git, sbt CI-CD, Docker, k8)
+
 ## All the best
